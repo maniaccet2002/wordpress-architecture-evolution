@@ -7,8 +7,8 @@
 # STEP 1 - Configure Authentication Variables which are used below
 DBName='wordpress'
 DBUser='wordpress'
-DBPassword='Ridhu@123'
-DBRootPassword='Ridhu@123'
+DBPassword='wordpress'
+DBRootPassword='wordpress'
 
 # STEP 2 - Install system software - including Web and DB
 sudo yum update -y
