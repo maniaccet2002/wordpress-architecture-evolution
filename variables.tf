@@ -14,5 +14,5 @@ variable "wordpress_db_password" {
     default = "wordpress"
 }
 variable "deployment_type" {
-    default = "rds_multi_az"
+    default = "rds_single_az"
 }

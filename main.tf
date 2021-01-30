@@ -27,3 +27,9 @@ module "wordpress-rds-cluster" {
     deployment_type = var.deployment_type
     
 }
+module "wordpress_efs" {
+    #count = var.deployment_type == "rds_single_az_efs" || var.deployment_type == "rds_multi_az_efs"
+    source = "./efs"
+    #private-app-1a = module.wordpress-vpc.private-app-1a
+    app_subnetid_list = [module.wordpress-vpc.private-app-1a,module.wordpress-vpc.private-app-1b,module.wordpress-vpc.private-app-1c]
+}
