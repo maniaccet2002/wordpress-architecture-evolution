@@ -56,3 +56,6 @@ output "wordpress_public_sg" {
 output "wordpress_rds_sg" {
   value = aws_security_group.wordpress_rds_sg.id
 }
+output "wordpress_efs_sg" {
+  value = aws_security_group.wordpress_efs_sg.id
+}

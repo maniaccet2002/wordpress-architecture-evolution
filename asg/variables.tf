@@ -1,0 +1,17 @@
+variable "vpc_id" {}
+variable "public_subnet_list" {}
+variable "wordpress_public_sg" {}
+variable "wordpress_db_name" {}
+variable "wordpress_db_user" {}
+variable "wordpress_db_password" {}
+variable "wordpress_db_address" {}
+variable "wordpress_efsid" {}
+variable "aws_region" {}
+variable "instance_type" {}
+variable "user_data_file" {}
+variable "asg_desired_capacity" {}
+variable "asg_max_size" {}
+variable "asg_min_size" {}
+variable "asg_health_check_type" {}
+variable "cpu_scaleout_threshold" {}
+variable "cpu_scalein_threshold" {}

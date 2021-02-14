@@ -1,0 +1,9 @@
+variable "aurora_db_name" {}
+variable "aurora_db_user" {}
+variable "aurora_db_password" {}
+variable "aurora_az_list" {}
+variable "db_subnet_list" {}
+variable "aurora_instance_class" {}
+variable "aurora_db_engine" {}
+variable "aurora_db_engine_version" {}
+variable "aurora_security_group" {}

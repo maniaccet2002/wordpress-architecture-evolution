@@ -5,10 +5,11 @@ DBName=${DBName}
 DBUser=${DBUser}
 DBPassword=${DBPassword}
 DBEndpoint=${DBEndpoint}
+EFSFSID=${EFSFSID}
 
 # Install system software - including Web and DB
 sudo yum update -y
-sudo yum install -y mariadb-server httpd wget
+sudo yum install -y mariadb-server httpd wget amazon-efs-utils
 sudo amazon-linux-extras install -y lamp-mariadb10.2-php7.2 php7.2
 
 
@@ -18,6 +19,12 @@ sudo systemctl enable httpd
 sudo systemctl enable mariadb
 sudo systemctl start httpd
 sudo systemctl start mariadb
+
+#Mount EFS File system
+mkdir -p /var/www/html/wp-content
+chown -R ec2-user:apache /var/www/
+echo -e "$EFSFSID:/ /var/www/html/wp-content efs _netdev,tls,iam 0 0" >> /etc/fstab
+mount -a -t efs defaults
 
 # Install Wordpress
 sudo wget http://wordpress.org/latest.tar.gz -P /var/www/html
@@ -36,4 +43,3 @@ sudo sed -i "s/'username_here'/'$DBUser'/g" wp-config.php
 sudo sed -i "s/'password_here'/'$DBPassword'/g" wp-config.php
 sudo sed -i "s/'localhost'/'$DBEndpoint'/g" wp-config.php   
 sudo chown apache:apache * -R
-

@@ -1,0 +1,77 @@
+data "aws_availability_zones" "available" {}
+module "wordpress_vpc" {
+    source = "./vpc"
+    vpc_cidr = var.vpc_cidr
+    az_list = data.aws_availability_zones.available.names
+}
+module "wordpress_ec2_instance" {
+    count =  var.deployment_type != "rds_asg" && var.deployment_type !=  "aurora_asg" ? 1 : 0
+    source = "./ec2"
+    vpc_id = module.wordpress_vpc.vpcid
+    public_subnet_id = module.wordpress_vpc.public-web-1a
+    wordpress_public_sg = module.wordpress_vpc.wordpress_public_sg
+    wordpress_db_name = var.wordpress_db_name
+    wordpress_db_user = var.wordpress_db_user
+    wordpress_db_password = var.wordpress_db_password
+    wordpress_db_address = var.deployment_type != "single_instance" ? module.wordpress_rds_cluster[0].wordpress_rds_address : ""
+    deployment_type = var.deployment_type
+    wordpress_efsid = var.deployment_type != "single_instance" && var.deployment_type != "rds_single_az" && var.deployment_type != "rds_multi_az" ? module.wordpress_efs[0].wordpress_efsid : null
+    depends_on = [module.wordpress_rds_cluster,module.wordpress_efs]
+}
+module "wordpress_rds_cluster" {
+    count = var.deployment_type != "single_instance" && var.deployment_type != "aurora_asg" ? 1 : 0
+    #count = var.deployment_type == "rds_single_az" || var.deployment_type == "rds_multi_az" ? 1 : 0
+    source = "./rds"
+    db_subnet_list = [module.wordpress_vpc.private-db-1a,module.wordpress_vpc.private-db-1b,module.wordpress_vpc.private-db-1c] 
+    wordpress_rds_sg = module.wordpress_vpc.wordpress_rds_sg
+    rds_instance_class = var.deployment_type == "rds_multi_az" ? "db.t3.micro" : var.deployment_type == "rds_single_az" ? "db.t2.micro" : "db.t3.small"
+    rds_db_engine = var.deployment_type == "aurora_asg" ? "aurora-mysql" : "mysql"
+    rds_db_engine_version = var.deployment_type == "aurora_asg" ?  "5.7.12" : "5.6.46"
+    rds_db_name = var.wordpress_db_name
+    rds_db_user = var.wordpress_db_user
+    rds_db_password = var.wordpress_db_password
+    deployment_type = var.deployment_type
+    
+}
+module "wordpress_efs" {
+    count = var.deployment_type != "single_instance" && var.deployment_type != "rds_single_az" && var.deployment_type != "rds_multi_az" ? 1 : 0
+    source = "./efs"
+    #private-app-1a = module.wordpress_vpc.private-app-1a
+    app_subnetid_list = [module.wordpress_vpc.private-app-1a,module.wordpress_vpc.private-app-1b,module.wordpress_vpc.private-app-1c]
+    wordpress_efs_sg = module.wordpress_vpc.wordpress_efs_sg
+}
+module "wordpress_asg" {
+    count =  var.deployment_type == "rds_asg"  || var.deployment_type == "aurora_asg" ? 1 : 0
+    source = "./asg"
+    vpc_id = module.wordpress_vpc.vpcid
+    public_subnet_list = [module.wordpress_vpc.public-web-1a,module.wordpress_vpc.public-web-1b,module.wordpress_vpc.public-web-1c]
+    wordpress_public_sg = module.wordpress_vpc.wordpress_public_sg
+    wordpress_db_name = var.wordpress_db_name
+    wordpress_db_user = var.wordpress_db_user
+    wordpress_db_password = var.wordpress_db_password
+    #wordpress_db_address = module.wordpress_rds_cluster[0].wordpress_rds_address
+    wordpress_db_address = module.wordpress_aurora[0].aurora_endpoint
+    wordpress_efsid = module.wordpress_efs[0].wordpress_efsid
+    depends_on = [module.wordpress_rds_cluster,module.wordpress_efs]
+    aws_region = var.aws_region
+
+}
+module "wordpress_aurora" {
+    count = var.deployment_type == "aurora_asg" ? 1 : 0
+    source = "./aurora"
+    #db_subnet_list = [module.wordpress_vpc.private-db-1a,module.wordpress_vpc.private-db-1b,module.wordpress_vpc.private-db-1c] 
+    #wordpress_rds_sg = module.wordpress_vpc.wordpress_rds_sg
+    #rds_instance_class = "db.t3.small" 
+    #rds_db_engine = "aurora-mysql"
+    #rds_db_engine_version = "2.07.2"
+    aurora_az_list = [ "us-east-1a", "us-east-1b", "us-east-1c" ]
+    aurora_db_name = var.wordpress_db_name
+    aurora_db_user = var.wordpress_db_user
+    aurora_db_password = var.wordpress_db_password
+    db_subnet_list = [module.wordpress_vpc.private-db-1a,module.wordpress_vpc.private-db-1b,module.wordpress_vpc.private-db-1c] 
+    aurora_instance_class = "db.t3.small"
+    aurora_db_engine = "aurora"
+    aurora_db_engine_version = "5.6.mysql_aurora.1.22.2"
+    aurora_security_group = module.wordpress_vpc.wordpress_rds_sg
+    #deployment_type = var.deployment_type
+}

@@ -5,4 +5,8 @@ variable "wordpress_db_name" {}
 variable "wordpress_db_user" {}
 variable "wordpress_db_password" {}
 variable "wordpress_db_address" {}
-variable "deployment_type" {}
+variable "wordpress_efsid" {}
+variable "wordpress_elastic_ip" {}
+variable "wordpress_efs" {}
+variable "instance_type" {}
+variable "user_data_file" {}

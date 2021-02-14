@@ -5,10 +5,12 @@ DBName=${DBName}
 DBUser=${DBUser}
 DBPassword=${DBPassword}
 DBEndpoint=${DBEndpoint}
+EFSFSID=${EFSFSID}
+Region=${Region}
 
 # Install system software - including Web and DB
 sudo yum update -y
-sudo yum install -y mariadb-server httpd wget
+sudo yum install -y mariadb-server httpd wget amazon-efs-utils
 sudo amazon-linux-extras install -y lamp-mariadb10.2-php7.2 php7.2
 
 
@@ -18,6 +20,12 @@ sudo systemctl enable httpd
 sudo systemctl enable mariadb
 sudo systemctl start httpd
 sudo systemctl start mariadb
+
+#Mount EFS File system
+mkdir -p /var/www/html/wp-content
+chown -R ec2-user:apache /var/www/
+echo -e "$EFSFSID:/ /var/www/html/wp-content efs _netdev,tls,iam 0 0" >> /etc/fstab
+mount -a -t efs defaults
 
 # Install Wordpress
 sudo wget http://wordpress.org/latest.tar.gz -P /var/www/html
@@ -29,7 +37,6 @@ sudo rm latest.tar.gz
 
 
 # Configure Wordpress
-
 sudo cp ./wp-config-sample.php ./wp-config.php
 sudo sed -i "s/'database_name_here'/'$DBName'/g" wp-config.php
 sudo sed -i "s/'username_here'/'$DBUser'/g" wp-config.php
@@ -37,3 +44,6 @@ sudo sed -i "s/'password_here'/'$DBPassword'/g" wp-config.php
 sudo sed -i "s/'localhost'/'$DBEndpoint'/g" wp-config.php   
 sudo chown apache:apache * -R
 
+# Send signal to Autoscaling lifecycle hook on completion of user data script execution. EC2 instance state will be in "Pending:Wait" status till this signal is sent
+instance_id=$(curl http://169.254.169.254/latest/meta-data/instance-id)
+aws autoscaling complete-lifecycle-action --lifecycle-action-result CONTINUE --lifecycle-hook-name wordpress-instance-launch-hook --auto-scaling-group-name wordpress_asg --instance-id $instance_id --region $Region
