@@ -8,7 +8,9 @@ In this architecture, both the application as well as the database will be deplo
 Simple architecture 
 #### Cons
 • No Horizontal scaling. Only vertical scaling is possible by increasing the EC2 instance size and type
+
 • No resilience. If the EC2 instance is terminated, the entire application and database is lost
+
 • Database is deployed on the publically accessible EC2 instance
 
 #### How to deploy terraform stack
