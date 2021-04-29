@@ -178,7 +178,7 @@ In this architecture, application layer is hosted using auto scaling group of EC
 
 • Load balancer health checks will be used by the auto scaling group to replace the unhealthy instances
 
-###Cons
+### Cons
 • RDS Multi AZ mode only provides a single availability zone resilience
 
 • RDS Multi AZ mode doesnot improve the performance of the database. 
@@ -203,13 +203,23 @@ You will be prompted to enter the password for the wordpress database that will 
 •	terraform destroy --auto-approve --var-file=asg_rds_multiaz_efs.tfvars
 
 You will be prompted to enter the password for the wordpress database
-###Architecture
+### Architecture
 ![Optional Text](../main/images/Wordpress_autoscaling_rds_multiaz.png)
 
 ## EC2 Auto Scaling with EFS and Aurora
 In this architecture, the database layer is deployed using RDS aurora. Aurora provides 3 AZ resilience
-###Pros
-• Aurora provides 3 AZ resilience
+### Pros
+• Aurora provides 3 AZ resilience. Aurora replicates data 6 times across 3 different AZs. It can tolerate two failures without impacting writes and 3 failures without impacting reads
+• Aurora global database enables cross region DR by having read replicas in a different region
+• Aurora multi master mode improves the write performance for the aurora cluster
+• Aurora supports upto 15 read replicas in the same region and reader endpoints can be used to load balance between the read replicas
+• Supports parallel querying which improves the performance of long running queries
+• Supports parallel querying which improves the performance of long running queries
+• Back track feature in aurora allows in-place rewinds to a previous point in time
+• Aurora serverless provides on-demand auto-scaling feature which helps to scale aurora compute based on the load and it can go to a pause state when there is no load.
+
+### Cons
+• Aurora serverless is tied to a single instance. In case of AZ failure, a new serverlesss instance will be created in another AZ which increases failover time as compared to  failover to a traditional read replica
 
 #### How to deploy terraform stack
 •	Download the terraform code from the github repo
