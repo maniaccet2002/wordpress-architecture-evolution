@@ -41,7 +41,7 @@ You will be prompted to enter the password for the wordpress database
 
 ## Single EC2 instance with RDS Single Availability Zone architecture
 In this architecture, MySql database will be deployed using AWS RDS in Single Availability zone mode. Wordpress application will be deployed on an EC2 instance.
-TThis architecture will help to split the database and application. Application instance can be on a public subnet and database instance will be on a private subnet and the security group attached to the database is configured to allow the connections only from the application security group
+This architecture will help to split the database and application. Application instance can be on a public subnet and database instance will be on a private subnet and the security group attached to the database is configured to allow the connections only from the application security group
 ### Pros
 • Deploying the database using RDS provides automatic snapshots. These snapshots are AZ resilient and can be used to restore the database even if the entire availability zone goes down
 
