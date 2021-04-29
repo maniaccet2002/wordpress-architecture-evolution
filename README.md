@@ -41,7 +41,7 @@ You will be prompted to enter the password for the wordpress database
 
 ## Single EC2 instance with RDS Single Availability Zone architecture
 In this architecture, MySql database will be deployed using AWS RDS in Single Availability zone mode. Wordpress application will be deployed on an EC2 instance.
-This architecture will help to split the database and application. Application instance can be on a public subnet and database instance will be on a private subnet and the security group attached to the database is configured to allow the connections only from the application security group
+This architecture will help to split the database and application. Application instance can be on a public subnet and database instance can be on a private subnet and the security group attached to the database can be configured to allow the connections only from the application security group
 ### Pros
 • Deploying the database using RDS provides automatic snapshots. These snapshots are AZ resilient and can be used to restore the database even if the entire availability zone goes down
 
@@ -138,7 +138,7 @@ In this architecture, database is hosted on RDS in multi AZ mode. Additionaly, a
 ###Cons
 • No Horizontal scaling for the application layer.
 
-• Though EFS provides resilience against an AZ failure, recovery is still manual.
+• Though EFS provides resilience against an AZ failure, recovery(deployment of EC2 instance) is still manual.
 
 #### How to deploy terraform stack
 •	Download the terraform code from the github repo
@@ -176,9 +176,12 @@ In this architecture, application layer is hosted using auto scaling group of EC
 
 • Load balancer checks the health of the EC2 instances to avoid routing the application requests to unhealthy instances
 
-• Load balancer health checks will be used the auto scaling group to replace the unhealthy instances
+• Load balancer health checks will be used by the auto scaling group to replace the unhealthy instances
 
 ###Cons
+• RDS Multi AZ mode only provides a single availability zone resilience
+
+• RDS Multi AZ mode doesnot improve the performance of the database. 
 #### How to deploy terraform stack
 •	Download the terraform code from the github repo
 
