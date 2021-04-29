@@ -135,7 +135,7 @@ You will be prompted to enter the password for the wordpress database
 In this architecture, database is hosted on RDS in multi AZ mode. Additionaly, an EFS file system is mounted on to the EC2 instance hosting the wordpress application. All application related files can be stored on the EFS file system which is regional resilient. In case of an availability zone failure, application instance can be recovered by bringing up an EC2 instance in an another availability zone and attaching it with the same EFS file system
 ### Pros
 • Data stored on the EFS file system is regional resilient. EFS can be attached to EC2 instances on any availability zone by creating a mount target. This improves the availability of the application layer
-###Cons
+### Cons
 • No Horizontal scaling for the application layer.
 
 • Though EFS provides resilience against an AZ failure, recovery(deployment of EC2 instance) is still manual.
@@ -163,13 +163,13 @@ You will be prompted to enter the password for the wordpress database that will 
 You will be prompted to enter the password for the wordpress database
 
 
-###Architecture
+### Architecture
 ![Optional Text](../main/images/Wordpress_ec2_EFS_rds_multiaz.png)
 
 
 ## EC2 Auto Scaling with EFS and RDS Multi AZ Architecture
 In this architecture, application layer is hosted using auto scaling group of EC2 instance with an application load balancer to load balance the requests between the available application servers
-###Pros
+### Pros
 • Application layer can be scaled out or in based on the load on the EC2 instances
 
 • Application is accessed using the load balancer DNS name which routes the requests to one of the EC2 instances hosting the application layer
