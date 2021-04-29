@@ -31,6 +31,8 @@ You will be prompted to enter the password for the wordpress database that will 
 
 •	terraform destroy --auto-approve --var-file=single_instance.tfvars
 
+You will be prompted to enter the password for the wordpress database
+
 #### Architecture
 ![Optional Text](../main/images/Wordpress_ec2_single_instance.png) 
 
