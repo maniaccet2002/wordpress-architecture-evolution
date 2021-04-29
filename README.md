@@ -7,9 +7,9 @@ In this architecture, both the application as well as the database will be deplo
 #### Pros
 Simple architecture 
 #### Cons
-No Horizontal scaling. Only vertical scaling is possible by increasing the EC2 instance size and type
-No resilience. If the EC2 instance is terminated, the entire application and database is lost
-Database is deployed on the publically accessible EC2 instance
+• No Horizontal scaling. Only vertical scaling is possible by increasing the EC2 instance size and type
+• No resilience. If the EC2 instance is terminated, the entire application and database is lost
+• Database is deployed on the publically accessible EC2 instance
 
 #### How to deploy terraform stack
 •	Download the terraform code from the github repo
@@ -26,14 +26,14 @@ Database is deployed on the publically accessible EC2 instance
 
 You will be prompted to enter the password for the wordpress database that will be created as part of this stack
 
-# How to destroy the terraform stack
+#### How to destroy the terraform stack
 •	cd wordpress-architecture-evolution
 
 •	terraform destroy --auto-approve --var-file=single_instance.tfvars
 
 You will be prompted to enter the password for the wordpress database
 
-#### Architecture
+### Architecture
 ![Optional Text](../main/images/Wordpress_ec2_single_instance.png) 
 
 
