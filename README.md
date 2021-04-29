@@ -1,8 +1,8 @@
 # wordpress-architecture-evolution
-# Overview
-This project provides terraform automation scripts to various deployment architectures to migrate web applications deployment on virtual machines to AWS EC2
+## Overview
+This project provides terraform automation scripts for various deployment architectures to migrate web applications deployment on virtual machines to AWS EC2
 
-# Single EC2 Instance architecture
+## Single EC2 Instance architecture
 In this architecture, both the application as well as the database will be deployed on a single EC2 instance. Installation of wordpress and MySQL database  on the EC2 instance will be done by user data scripts
 #### Pros
 Simple architecture 
@@ -11,11 +11,31 @@ No Horizontal scaling. Only vertical scaling is possible by increasing the EC2 i
 No resilience. If the EC2 instance is terminated, the entire application and database is lost
 Database is deployed on the publically accessible EC2 instance
 
+#### How to deploy terraform stack
+•	Download the terraform code from the github repo
+
+•	cd wordpress-architecture-evolution
+
+• Open single_instance.tfvars file in a text editor and modify the varaibles values as per your requirements
+
+•	terraform init
+
+•	terraform validate
+
+•	terraform apply --auto-approve --var-file=single_instance.tfvars
+
+You will be prompted to enter the password for the wordpress database that will be created as part of this stack
+
+# How to destroy the terraform stack
+•	cd wordpress-architecture-evolution
+
+•	terraform destroy --auto-approve --var-file=single_instance.tfvars
+
 #### Architecture
 ![Optional Text](../main/images/Wordpress_ec2_single_instance.png) 
 
 
-# Single EC2 instance with RDS Single Availability Zone architecture
+## Single EC2 instance with RDS Single Availability Zone architecture
 In this architecture, MySql database will be deployed using AWS RDS in Single Availability zone mode. Wordpress application will be deployed on an EC2 instance.
 Deploying this architecture will help to split the database and application. Application instance can be on a public subnet and database instance will be on a private subnet and the security group attached to the database is configured to allow the connections only from the application security group
 #### Pros
@@ -31,7 +51,7 @@ In case of Availability zone failure, though automatic snapshots can be used to 
 ![Optional Text](../main/images/Wordpress_ec2_rds_singleaz.png)
 
 
-# Single EC2 instance with RDS Multi AZ architecture
+## Single EC2 instance with RDS Multi AZ architecture
 In this architecture, MySQL database will be deployed using AWS RDS in Multi AZ mode. In Multi AZ mode, you will have a primary instance and a standby instance on a different availability zone. Data from the primary instance will be replicated to the standby instance synchronously. 
 #### Pros
 Since the data is replicated synchronously between primary and standby instance, standby instance can be promoted to the primary quickly which improves the RPO and RTO in case of AZ failure
@@ -47,7 +67,7 @@ No resilience for the application. If the Availability Zone or the EC2 instance 
 ![Optional Text](../main/images/Wordpress_ec2_rds_multiaz.png)
 
 
-# Single EC2 instance with EFS and RDS Multi AZ Architecture
+## Single EC2 instance with EFS and RDS Multi AZ Architecture
 In this architecture, database is hosted on RDS in multi AZ mode. Additionaly, an EFS file system is mounted on to the EC2 instance hosting the wordpress application. All application related files can be stored on the EFS file system which is regional resilient. In case of an availability zone failure, application instance can be recovered by bringing up an EC2 instance in an another availability zone and attaching it with the same EFS file system
 #### Pros
 Data stored on the EFS file system is regional resilient. EFS can be attached to EC2 instances on any availability zone by creating a mount target. This improves the availability of the application layer
@@ -58,7 +78,7 @@ Though EFS provides resilience against an AZ failure, recovery is still manual.
 ![Optional Text](../main/images/Wordpress_ec2_EFS_rds_multiaz.png)
 
 
-# EC2 Auto Scaling with EFS and RDS Multi AZ Architecture
+## EC2 Auto Scaling with EFS and RDS Multi AZ Architecture
 In this architecture, application layer is hosted using auto scaling group of EC2 instance with an application load balancer to load balance the requests between the available application servers
 ####Pros
 Application layer can be scaled out or in based on the load on the EC2 instances
@@ -69,7 +89,7 @@ Load balancer health checks will be used the auto scaling group to replace the u
 ####Architecture
 ![Optional Text](../main/images/Wordpress_autoscaling_rds_multiaz.png)
 
-# EC2 Auto Scaling with EFS and Aurora
+## EC2 Auto Scaling with EFS and Aurora
 In this architecture, the database layer is deployed using RDS aurora. Aurora provides 3 AZ resilience
 ####Pros
 Aurora provides 3 AZ resilience
