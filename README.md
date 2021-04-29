@@ -4,9 +4,9 @@ This project provides terraform automation scripts for various deployment archit
 
 ## Single EC2 Instance architecture
 In this architecture, both the application as well as the database will be deployed on a single EC2 instance. Installation of wordpress and MySQL database  on the EC2 instance will be done by user data scripts
-#### Pros
+### Pros
 Simple architecture 
-#### Cons
+### Cons
 • No Horizontal scaling. Only vertical scaling is possible by increasing the EC2 instance size and type
 
 • No resilience. If the EC2 instance is terminated, the entire application and database is lost
