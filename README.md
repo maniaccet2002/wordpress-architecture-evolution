@@ -210,12 +210,19 @@ You will be prompted to enter the password for the wordpress database
 In this architecture, the database layer is deployed using RDS aurora. Aurora provides 3 AZ resilience
 ### Pros
 • Aurora provides 3 AZ resilience. Aurora replicates data 6 times across 3 different AZs. It can tolerate two failures without impacting writes and 3 failures without impacting reads
+
 • Aurora global database enables cross region DR by having read replicas in a different region
+
 • Aurora multi master mode improves the write performance for the aurora cluster
+
 • Aurora supports upto 15 read replicas in the same region and reader endpoints can be used to load balance between the read replicas
+
 • Supports parallel querying which improves the performance of long running queries
+
 • Supports parallel querying which improves the performance of long running queries
+
 • Back track feature in aurora allows in-place rewinds to a previous point in time
+
 • Aurora serverless provides on-demand auto-scaling feature which helps to scale aurora compute based on the load and it can go to a pause state when there is no load.
 
 ### Cons
